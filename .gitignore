@@ -1,0 +1,8 @@
+# Build artifacts
+wslgit/wslgit
+wslgit/wslgit.exe
+
+# Python
+__pycache__/
+*.pyc
+*.pyo

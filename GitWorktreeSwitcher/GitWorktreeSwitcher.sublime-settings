@@ -1,0 +1,37 @@
+{
+    // Git executable. Accepts a plain name or path, or a list for wrappers
+    // (e.g. ["wsl.exe", "git"]). To run git inside WSL through a shim such as
+    // wslgit.exe, point this at the executable:
+    //   "C:/Users/me/AppData/Roaming/Sublime Text/Packages/User/GitSavvy-WSL/wslgit.exe"
+    "git_binary": "git",
+
+    // When a WSL-based git binary is detected (wslgit.exe / a "wsl*" name,
+    // or the default WSL only when the repo lives under /mnt), the plugin
+    // translates between Sublime's folder spelling and the Linux paths git
+    // answers with. "auto" enables translation only for WSL bridges on
+    // Windows; set true/false to force it on or off.
+    "wsl_bridge": "auto",
+
+    // After switching, reopen the file that was active before the switch when
+    // the same relative path exists in the target worktree.
+    "open_matching_file_on_switch": true,
+
+    // Restore the cursor row/column when a file is reopened in the target
+    // worktree.
+    "preserve_cursor_position": true,
+
+    // Show the absolute worktree path in the quick panel (false shortens the
+    // home directory to "~").
+    "show_full_path": true,
+
+    // Keep main/master directly after the current worktree, before the rest of
+    // the branches.
+    "sort_main_first": true,
+
+    "main_branch_names": ["main", "master"],
+
+    // Print each step (git command, repo root, worktree count, panel index,
+    // target file) to Sublime's console: View > Show Console. Enable this when
+    // reporting a problem.
+    "debug_log": false
+}

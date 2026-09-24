@@ -1,0 +1,14 @@
+[
+    {
+        "caption": "Git Worktree: Switch",
+        "command": "git_worktree_switch"
+    },
+    {
+        "caption": "Git Worktree: Open Current File In...",
+        "command": "git_worktree_open_current_file"
+    },
+    {
+        "caption": "Git Worktree: Open In New Window",
+        "command": "git_worktree_open_new_window"
+    }
+]
