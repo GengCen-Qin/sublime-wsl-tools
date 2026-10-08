@@ -25,7 +25,9 @@ never parsed and no Git state is ever modified.
 ## Install During Development
 
 Copy or symlink this directory into Sublime Text's `Packages` directory as
-`GitWorktreeSwitcher` (`Preferences > Browse Packages...`).
+`GitWorktreeSwitcher` (`Preferences > Browse Packages...`). The included
+`.python-version` file makes Sublime run the plugin on Python 3.8 instead of
+the default 3.3, which is required.
 
 ## Usage
 
