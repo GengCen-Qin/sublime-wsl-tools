@@ -42,15 +42,21 @@ Git Worktree: Open In New Window
 `Git Worktree: Switch` shows:
 
 ```text
-feature/login                              current
-/home/me/worktrees/login             ·  4c5d6e7
-main
-/home/me/code/my-project             ·  9f8e7d6
 task-01928
-/home/me/worktrees/task-01928        ·  a1b2c3d
+/home/me/worktrees/task-01928        ·  a1b2c3d   current
+* my-project
+/home/me/code/my-project             ·  9f8e7d6   main
+feature/login
+/home/me/worktrees/login             ·  4c5d6e7
 ```
 
-The current worktree is always first, then `main`/`master`, then the remaining
+The main worktree — the directory the repository was first checked out in, such
+as `/home/me/code/my-project` above — is prefixed with `*` and annotated `main`,
+so it can be told apart at a glance from the linked worktrees, which usually live
+under a tool-managed directory. Git always lists the main worktree first, so no
+configuration is needed; set `mark_main_worktree` to `false` to drop the prefix.
+
+The current worktree is always first, then the main worktree, then the remaining
 branches by name. Detached worktrees show `(detached) <short-sha>` and locked
 ones are marked `locked`, but are still selectable.
 
@@ -84,6 +90,7 @@ On macOS use `["super+alt+w"]` instead.
     "preserve_cursor_position": true,
     "show_full_path": true,
     "sort_main_first": true,
+    "mark_main_worktree": true,
     "main_branch_names": ["main", "master"],
     "debug_log": false
 }
@@ -98,7 +105,9 @@ On macOS use `["super+alt+w"]` instead.
 - `preserve_cursor_position` — restore the cursor row/column of that file.
 - `show_full_path` — show absolute worktree paths in the quick panel; `false`
   shortens the home directory to `~`.
-- `sort_main_first` / `main_branch_names` — ordering of the quick panel.
+- `sort_main_first` / `main_branch_names` — ordering of the quick panel. The
+  main worktree is kept directly after the current one.
+- `mark_main_worktree` — prefix the main worktree with `*` in the quick panel.
 - `debug_log` — print each step (git command, repo root, worktree count, panel
   selection, target file) to Sublime's console (`View > Show Console`). Turn it
   on when reporting a problem.

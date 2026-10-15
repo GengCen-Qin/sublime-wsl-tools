@@ -277,7 +277,7 @@ def git_root(path):
 
 class Worktree:
 
-    __slots__ = ("path", "head", "branch", "detached", "locked")
+    __slots__ = ("path", "head", "branch", "detached", "locked", "is_main")
 
     def __init__(self, path):
         self.path = path
@@ -285,6 +285,10 @@ class Worktree:
         self.branch = None
         self.detached = False
         self.locked = False
+        # The main (primary) checkout, e.g. the directory where the repo was
+        # first cloned, as opposed to the linked worktrees. Set by the parser:
+        # ``git worktree list`` guarantees the main worktree comes first.
+        self.is_main = False
 
     def label(self):
         """Branch name, or a ``(detached) <short-sha>`` label."""
@@ -321,6 +325,10 @@ def _parse_porcelain(text, nul_separated):
     for line in lines:
         if line.startswith("worktree "):
             entry = Worktree(line[len("worktree "):])
+            # The first record is the main worktree ("git worktree list"
+            # always lists it first, before every linked worktree).
+            if not worktrees:
+                entry.is_main = True
             worktrees.append(entry)
         elif entry is None:
             continue
@@ -462,14 +470,17 @@ def same_path(a, b):
 
 
 def sort_worktrees(worktrees, current_root):
-    """Current worktree first, then main/master, then branches by name."""
+    """Current worktree first, then the main one, then branches by name."""
     main_names = set(_setting("main_branch_names", ["main", "master"]))
     sort_main_first = _setting("sort_main_first", True)
 
     def key(wt):
         is_current = 0 if same_path(wt.path, current_root) else 1
         is_main = 1
-        if sort_main_first and (wt.branch or "") in main_names:
+        # The main worktree is a fixed location the user returns to often, so it
+        # is kept near the top whether or not it happens to sit on main/master
+        # (it is frequently on a feature branch).
+        if sort_main_first and (wt.is_main or (wt.branch or "") in main_names):
             is_main = 0
         return (is_current, is_main, wt.sort_label())
 
@@ -477,7 +488,13 @@ def sort_worktrees(worktrees, current_root):
 
 
 def build_panel_items(worktrees, current_root):
-    """Quick panel entries: branch as trigger, details as the worktree path."""
+    """Quick panel entries: branch as trigger, details as the worktree path.
+
+    The main worktree is prefixed with ``*`` so the primary checkout can be told
+    apart at a glance from the linked worktrees, which usually live under a
+    tool-managed directory.
+    """
+    mark_main = _setting("mark_main_worktree", True)
     items = []
     for wt in worktrees:
         notes = []
@@ -485,13 +502,18 @@ def build_panel_items(worktrees, current_root):
             notes.append("current")
         if wt.locked:
             notes.append("locked")
+        if wt.is_main:
+            notes.append("main")
         details = _display_path(wt.path)
         if wt.head and not wt.detached:
             details = "{0}  ·  {1}".format(details, wt.head[:7])
+        trigger = wt.label()
+        if wt.is_main and mark_main:
+            trigger = "* {0}".format(trigger)
         # annotation must be "" when empty: Sublime compares it against "",
         # and a None would be forwarded to the API as a non-string.
         items.append(sublime.QuickPanelItem(
-            trigger=wt.label(),
+            trigger=trigger,
             details=details,
             annotation=" ".join(notes),
         ))

@@ -28,6 +28,11 @@
     // the branches.
     "sort_main_first": true,
 
+    // Prefix the main (primary) checkout with "* " in the quick panel, so the
+    // directory the repository was first checked out in can be told apart from
+    // the linked worktrees. Git always lists the main worktree first.
+    "mark_main_worktree": true,
+
     "main_branch_names": ["main", "master"],
 
     // Print each step (git command, repo root, worktree count, panel index,
